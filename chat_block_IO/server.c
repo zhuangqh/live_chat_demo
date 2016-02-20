@@ -27,13 +27,6 @@ int main() {
     server_address.sin_port = htons(SERVER_PORT);
     bind(listenfd, (struct sockaddr *)&server_address, sizeof(server_address));
     listen(listenfd, LISTENQ);
-    /* for (; ; ) { */
-            /* connfd = accept(listenfd, (struct sockaddr *)NULL, NULL); */
-            /* ticks = time(NULL); */
-            /* snprintf(buff, sizeof(buff), "%.24s\r\n", ctime(&ticks)); */
-            /* write(connfd, buff, strlen(buff)); */
-            /* close(connfd); */
-        /* } */
     maxfd = listenfd;
     maxi = -1;
     for (i = 0; i < FD_SETSIZE; i++)
@@ -71,7 +64,7 @@ int main() {
                     client[i] = -1;
                 } else {
                     for (j = 0; j <= maxi; j++) {
-                        if ((tmpfd = client[j]) < 0)
+                        if ((tmpfd = client[j]) < 0 || sockfd == tmpfd)
                             continue;
                         write(tmpfd, buf, n);
                     }

@@ -23,13 +23,16 @@ void error(const char *fmt, ...) {
 }
 
 void chat_cli(FILE *fp, int sockfd) {
-    int maxfdp1, stdineof, n;
+    int maxfdp1, stdineof, n, namelen;
     fd_set rset;
-    char buf[MAXLINE], name[MAXLINE];
+    char buf[MAXLINE], name[MAXLINE + MAXLINE];
     stdineof = 0;
     FD_ZERO(&rset);
     fputs("WHO R U: ", stdout);
-    fgets(name, MAXLINE, stdin);
+    scanf("%s", name);
+    namelen = strlen(name);
+    name[namelen] = ':';
+    name[namelen + 1] = '\0';
     for (;;) {
         if (stdineof == 0)
             FD_SET(fileno(fp), &rset);
@@ -43,7 +46,8 @@ void chat_cli(FILE *fp, int sockfd) {
                 else
                     error("chat_cli: server terminated prematurely");
             }
-            write(fileno(stdout), strcat(name, buf), n);
+            buf[n] = '\n', buf[n + 1] = '\0';
+            write(fileno(stdout), buf, n + 1);
         }
         if (FD_ISSET(fileno(fp), &rset)) {
             if ((n = read(fileno(fp), buf, MAXLINE)) == 0) {
@@ -52,7 +56,8 @@ void chat_cli(FILE *fp, int sockfd) {
                 FD_CLR(fileno(fp), &rset);
                 continue;
             }
-            write(sockfd, buf, n);
+            write(sockfd, strcat(name, buf), n + namelen);
+            name[namelen + 1] = '\0';
         }
     }
 }
