@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
     int sockfd;
     struct sockaddr_in server_address;
     if (argc != 2)
-        error("usage: a.out <IP_address>");
+        error("usage: ./client <IP_address>");
     if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
         error("socket error");
     bzero(&server_address, sizeof(server_address));
