@@ -50,7 +50,7 @@ void *copyto(void *arg) {
     name[namelen] = ':';
     name[namelen + 1] = '\0';
     while ((n = read(fileno(global_fp), sendline, MAXLINE)) > 0) {
-        write(global_sockfd, strcat(name, sendline), n + namelen), name[namelen + 1] = '\0';
+      write(global_sockfd, strcat(name, sendline), n + namelen), name[namelen + 1] = '\0';
     }
     shutdown(global_sockfd, SHUT_WR);
     return NULL;
